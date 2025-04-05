@@ -121,4 +121,4 @@ def update_20h_report(n):
 
 # Lancer le serveur
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run(debug=True)
