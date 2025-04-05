@@ -121,4 +121,4 @@ def update_20h_report(n):
 
 # Lancer le serveur
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0', port=8050)
