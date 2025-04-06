@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# URL de la page USD/JPY
+# URL of the USD/JPY page
 URL="https://www.investing.com/currencies/usd-jpy"
 
-# Télécharger le HTML, extraire le prix et le sauvegarder dans price.txt
-curl -s $URL | grep -oP '"last":\K[\d.]+(?=\s)' > price.txt
+# Download the HTML, extract the price, and save it to price.txt
+curl -s $URL | grep -oP '"last":\K[\d.]+ ' | head -n 1 > price.txt
 
-# Afficher le prix extrait
+# Display the extracted price
 cat price.txt
