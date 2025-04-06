@@ -2,6 +2,7 @@ import dash
 from dash import dcc, html
 import plotly.graph_objs as go
 import time
+from datetime import datetime
 
 # Create the Dash app
 app = dash.Dash(__name__)
@@ -27,22 +28,18 @@ app.layout = html.Div(
         # Graph of USD/JPY price over time
         dcc.Graph(id='live-update-graph'),
 
-        # Update every 5 minutes
+        # Update every minute
         dcc.Interval(
             id='interval-component',
-            interval=5*60*1000,  # Update every 5 minutes
+            interval=1*60*1000,  # Update every minute
             n_intervals=0
         ),
 
         # Section for the daily report at 8 PM
         html.Div(id='live-update-20h-report', style={'textAlign': 'center', 'fontSize': '18px', 'color': '#424242', 'marginTop': '20px'}),
-
-        # Section for displaying all currencies and their latest prices
-        html.Div(id='currency-prices-table', style={'textAlign': 'center', 'fontSize': '18px', 'color': '#424242', 'marginTop': '20px'}),
     ],
     style={'backgroundColor': '#f0f4f8', 'padding': '20px'}  # Background color for the page
 )
-
 
 # Callback to update the current price
 @app.callback(
@@ -50,7 +47,8 @@ app.layout = html.Div(
     [dash.dependencies.Input('interval-component', 'n_intervals')]
 )
 def update_price(n):
-    price = read_price()  # Read the price from the file
+    # Read the real-time price of USD/JPY from the scraped file
+    price = read_price()
     return f"Current USD/JPY Price: {price}"
 
 # Callback to update the price graph
@@ -75,5 +73,23 @@ def update_graph(n):
         )
     }
 
+# Callback to update the daily report at 8 PM
+@app.callback(
+    dash.dependencies.Output('live-update-20h-report', 'children'),
+    [dash.dependencies.Input('interval-component', 'n_intervals')]
+)
+def update_report(n):
+    try:
+        # Get today's report
+        report_date = datetime.now().strftime('%Y-%m-%d')
+        with open(f"daily_report_{report_date}.txt", "r") as f:
+            report = f.read()
+        return html.Div([
+            html.H3("Daily Report"),
+            html.Pre(report)  # Display the content of the report
+        ])
+    except Exception as e:
+        return html.Div('No report available.')
+
 if __name__ == '__main__':
-    app.run_server(debug=True, host='0.0.0.0', port=8080)
+    app.run(debug=True, host='0.0.0.0', port=8080)
