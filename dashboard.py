@@ -19,23 +19,30 @@ def read_price():
 app.layout = html.Div(
     children=[
         # Title of the dashboard
-        html.H1("USD/JPY Price Tracker", style={'textAlign': 'center', 'color': '#0D47A1', 'fontSize': '50px'}),
-       
+        html.H1("USD/JPY Price Tracker", style={'textAlign': 'center', 'color': '#F57C00', 'fontSize': '50px'}),  # Orange like Bloomberg
+
         # Display the current USD/JPY price
-        html.Div(id='live-update-price', style={'textAlign': 'center', 'fontSize': '24px', 'color': 'gray'}),
-       
+        html.Div(id='live-update-price', style={'textAlign': 'center', 'fontSize': '24px', 'color': '#212121'}),  # Black text
+
         # Graph of USD/JPY price over time
         dcc.Graph(id='live-update-graph'),
-       
-        # Update every minute
+
+        # Update every 5 minutes
         dcc.Interval(
             id='interval-component',
-            interval=1*60*1000,  # Update every minute
+            interval=5*60*1000,  # Update every 5 minutes
             n_intervals=0
         ),
+
+        # Section for the daily report at 8 PM
+        html.Div(id='live-update-20h-report', style={'textAlign': 'center', 'fontSize': '18px', 'color': '#424242', 'marginTop': '20px'}),
+
+        # Section for displaying all currencies and their latest prices
+        html.Div(id='currency-prices-table', style={'textAlign': 'center', 'fontSize': '18px', 'color': '#424242', 'marginTop': '20px'}),
     ],
-    style={'backgroundColor': '#f0f4f8', 'padding': '20px'}  # Background color of the page
+    style={'backgroundColor': '#f0f4f8', 'padding': '20px'}  # Background color for the page
 )
+
 
 # Callback to update the current price
 @app.callback(
